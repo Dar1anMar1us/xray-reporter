@@ -92,6 +92,7 @@ Created report key. Example: COTECCAREN-0000
     test-plan-id: ATESTPLANID
     jira-username: ${{ secrets.SRVC_E2ETEST_USERNAME }}
     jira-password: ${{ secrets.SRVC_E2ETEST_PASSWORD }}
+    summary: "An optional summary"
     description: "An optional description"
     testEnvironments: "DEV;QA"
 ```
