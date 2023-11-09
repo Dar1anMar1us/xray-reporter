@@ -1,0 +1,59 @@
+name: XRay Reporter
+description: 'Reports tests execution report to the specified Jira/XRay Test Plan'
+
+inputs:
+  path:
+    description: "Path to cucumber.json result file"
+    required: true
+  test-plan-id:
+    description: "Test Plan identifier"
+    required: true
+    default: ''
+  jira-url:
+    description: "Jira installation Url"
+    required: false
+    default: 'https://axinic.central.inditex.grp/jira'
+  jira-username:
+    description: "Jira username"
+    required: true
+  jira-password:
+    description: "Jira token or password"
+    required: true
+  jira-token:
+    description: "Jira token"
+    required: false
+  xray-token:
+    description: "Xray token"
+    required: false
+  description:
+    description: "Test execution description (jira field `description`)"
+    required: false
+  summary:
+    description: "Test execution summary (jira field `summary`)"
+    required: false
+  testEnvironments:
+    description: "A string containing a list of test environments separated by ';'"
+    required: false
+  cloud-env:
+    description: "A string containing where the tests were executed. It will be set as Karate Env field."
+    required: false
+    default: false
+  affected-versions:
+    description: "A string containing a list of affected versions separated by ';'. It will be set as Affects Version/s field."
+    required: false
+  labels:
+    description: "A string containing a list of labels separated by ';'. It will be set as Labels field."
+    required: false
+  assignee:
+    description: "Specify Jira User Id to set as assignee to the execution. Otherwise, the default user who do the JIRA Api call will be used."
+    required: false
+  debug:
+    description: "Specify debug mode. It adds more output. Take care, it can publish sensitive invormation if it's not properly cypher in your env variables"
+    default: false
+outputs:
+  report-key: # output will be available to future steps
+    description: 'Report imported info'
+  
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
