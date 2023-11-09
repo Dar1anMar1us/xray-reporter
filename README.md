@@ -36,7 +36,7 @@
 
 <h3 style="font-weight: bold" id="jira-url">jira-url</h3>
 
-Jira installation url. Default value is `https://axinic.central.inditex.grp/jira`
+Jira installation url.
 
 <h3 style="font-weight: bold" id="jira-username">jira-username</h3>
 
