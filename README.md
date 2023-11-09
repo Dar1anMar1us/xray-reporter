@@ -11,6 +11,7 @@
 - [jira-url](#jira-url)
 - [jira-username](#jira-username)
 - [jira-password](#jira-password)
+- [summary](#summary)
 - [description](#description)
 - [testEnvironments](#testenvironments)
 - [affected-versions](#affected-versions)
@@ -46,9 +47,13 @@ Jira installation url.
 
 **Required** Jira user password/token.
 
+<h3 style="font-weight: bold" id="summary">summary</h3>
+
+**OPTIONAL** Summary to set into the test summary jira issue.
+
 <h3 style="font-weight: bold" id="description">description</h3>
 
-**OPTIONAL** Description to set into the test execution jira issue as summary field.
+**OPTIONAL** Description to set into the test execution jira issue.
 
 <h3 style="font-weight: bold" id="testEnvironments">testEnvironments</h3>
 
