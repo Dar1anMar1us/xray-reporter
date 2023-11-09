@@ -5,7 +5,8 @@ const fetch = require('node-fetch');
 const base64 = require('nodejs-base64');
 const fs = require('fs');
 const https = require('https');
-const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true })
+const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true });
+const core = require('@actions/core');
 
 // ............................................................................
 // MEMBERS
@@ -14,7 +15,7 @@ let headers = xrayHeaders = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
-let baseUrl = 'https://axinic.central.inditex.grp/jira';
+let baseUrl = '';
 let xrayVersion = '2.0';
 
 // ............................................................................
@@ -42,9 +43,9 @@ function setExtendedAuth(username, password, jiraToken, xrayToken) {
     headers = createImportHeader(username, password, jiraToken);
     xrayHeaders = createImportHeader(username, password, xrayToken);
     xrayVersion = '1.0';
-  console.log('Jira external headers have been set');
+    core.info('Jira external headers have been set');
   } catch (err) {
-    console.log(err.message)
+    core.error(err.message)
     throw err.message;
   }
 }
@@ -60,7 +61,7 @@ function setAuthentication(username, password) {
     try {
         headers['Authorization'] = `Basic ${base64.base64encode(`${username}:${password}`)}`;
         xrayHeaders['Authorization'] = `Basic ${base64.base64encode(`${username}:${password}`)}`;
-    console.log('Jira internal headers have been set');
+        core.info('Jira internal headers have been set');
   } catch (err) {
     throw err.message;
   }
@@ -106,7 +107,7 @@ async function getIssueType(testPlan) {
   let issueType = undefined;
   const issueEndpoint = '/rest/api/2/issue/';
   const issueUlr = baseUrl + issueEndpoint + testPlan;
-  console.log(`Issue url is: ${issueUlr}`);
+  core.info(`Issue url is: ${issueUlr}`);
 
   issueType = await fetch(issueUlr, {
     method: 'GET',
@@ -116,7 +117,7 @@ async function getIssueType(testPlan) {
     .then(response => checkResponse(response))
     .then(response => response.json())
     .then(body => { return body.fields.issuetype.name })
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return issueType;
 }
@@ -130,7 +131,7 @@ async function importCucumberReport(reportFile) {
   let issueKey = undefined;
   const importEndpoint = `/rest/raven/${xrayVersion}/import/execution/cucumber`;
   const importUrl = baseUrl + importEndpoint;
-  console.log(`Import url is: ${importUrl}`);
+  core.info(`Import url is: ${importUrl}`);
 
   let reportFileData = fs.readFileSync(reportFile);
 
@@ -143,7 +144,7 @@ async function importCucumberReport(reportFile) {
     .then(response => checkResponse(response))
     .then(response => response.json())
     .then(body => { return body.testExecIssue.key })
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return issueKey;
 }
@@ -159,7 +160,7 @@ async function addTexecToTestplan(testPlanKey, testExecutionKey) {
   const testPlanExecutionsEndpoint = `/rest/raven/${xrayVersion}/api/testplan/${testPlanKey}/testexecution`;
   const testPlanExecutionsUrl = baseUrl + testPlanExecutionsEndpoint;
 
-  console.log(`Add test execution URL:  ${testPlanExecutionsUrl}`);
+  core.info(`Add test execution URL:  ${testPlanExecutionsUrl}`);
 
   added = await fetch(testPlanExecutionsUrl, {
     method: 'POST',
@@ -169,7 +170,7 @@ async function addTexecToTestplan(testPlanKey, testExecutionKey) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return added;
 }
@@ -193,7 +194,7 @@ async function changeIssueSummary(issueKey, summary) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return changed;
 }
@@ -217,7 +218,7 @@ async function changeIssueDescription(issueKey, description) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return changed;
 }
@@ -248,7 +249,7 @@ async function changeIssueAssignee(issueKey, newAssignee) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return changed;
 }
@@ -276,7 +277,7 @@ async function updateTestEnvironments(issueKey, testEnvironments) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return changed;
 }
@@ -308,7 +309,7 @@ async function updateAffectedVersions(issueKey, affectedVersions) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return changed;
 }
@@ -336,7 +337,7 @@ async function updateLabels(issueKey, labelList) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return changed;
 }
@@ -359,7 +360,7 @@ async function closeTestExecutionIssue(testExecutionKey) {
   })
     .then(response => checkResponse(response))
     .then(() => true)
-    .catch(error => console.log(error));
+    .catch(error => core.error(error));
 
   return closed;
 }
